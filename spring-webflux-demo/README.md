@@ -1,4 +1,4 @@
-1. Common process (CRUD)
+**1. Common process (CRUD)**
 
    ![Untitled Diagram (3)](CRUD.png)
 
@@ -10,7 +10,7 @@
    - flatMap
    - defer
 
-2. Messaging Process (Kafka, RabbitMQ, Other Service API)
+**2. Messaging Process (Kafka, RabbitMQ, Other Service API)**
 
    ![Untitled Diagram (4)](messaging.png)
 
@@ -20,7 +20,7 @@
    - Inbound: Serves as the layer used to receive topics (consumer). In this layer, data is received and processed to be used according to the respective features.
 
 
-3. What is the difference between using Spring MVC and Spring Webflux?
+**3. What is the difference between using Spring MVC and Spring Webflux?**
 
    The most noticeable and visible difference when using Spring Webflux, based on experience with this framework, is evident when looking directly at the threads.
 
@@ -51,7 +51,8 @@ and the code used is as follows:
 
    Meanwhile, for the asynchronous process, it can be seen that Webflux creates threads separate from the software threads, named elastic-3 to elastic-12 (10 threads) corresponding to the 10 requests made. This allows the 10 requests to be completed        simultaneously, around 3 seconds (matching the thread sleep duration).
 
-5. Spring Reactor
+**5. Spring Reactor**
+
    Spring Reactor is a reactive programming library that provides a foundation for building asynchronous, non-blocking applications on the JVM. It is part of the Spring Webflux ecosystem and enables handling of high-throughput, scalable operations with       minimal resource consumption. Reactor leverages Project Reactor, which provides two core reactive types:
 
    - Mono: Represents a single value or no value (0..1).
@@ -76,7 +77,7 @@ and the code used is as follows:
 
    Control thread execution with Schedulers.parallel(), Schedulers.elastic(), etc.
 
-4. How to run
+**4. How to run**
    - Install mongodb, java 8, maven
    - Create database on mongo db : webflux-demo
    - run mvn clean install
