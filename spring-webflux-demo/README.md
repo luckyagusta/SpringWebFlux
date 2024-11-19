@@ -2,9 +2,9 @@
 
    ![Untitled Diagram (3)](CRUD.png)
 
-   Dalam proses yang normal seperti CRUD, proses yang dilakukan adalah proses yang umum yang dimulai dari Controller -> Service -> Repository -> Database. Hanya saja dalam Spring Webflux, semua proses yang digunakan adalah proses asyncrounous.
+   In a normal process like CRUD, the steps generally follow a common flow that starts from Controller -> Service -> Repository -> Database. However, in Spring Webflux, all processes are asynchronous.
 
-   Dalam proses CRUD, ada beberapa method yang sering digunakan seperti :
+   In the CRUD process, there are several methods that are commonly used, such as:
 
    - map
    - flatMap
@@ -14,44 +14,70 @@
 
    ![Untitled Diagram (4)](messaging.png)
 
-   Sedangkan untuk messaging process (biasanya mengunakan process queue), kita memiliki layer Outbound dan Inbound, dimana :
+   Meanwhile, for the messaging process (usually using a process queue), we have the Outbound and Inbound layers, where:
 
-   - Outbound : Sebagai layer yang digunakan untuk melempar topic (producer). Dimana layer ini data digunakan untuk membuat topic (queue) terhadap service internal maupun service API external.
-   - Inbound : Sebagai layer yang digunakan untuk menerima topic (consumer). Dimana layer ini data diterima dan diolah untuk kemudian digunakan sesuai masing-masing fitur.
+   - Outbound: Serves as the layer used to publish topics (producer). This layer is responsible for creating topics (queues) for internal services or external API services.
+   - Inbound: Serves as the layer used to receive topics (consumer). In this layer, data is received and processed to be used according to the respective features.
 
 
-3. Apa sih perbedaan menggunakan Spring MVC dan Spring Webflux
+3. What is the difference between using Spring MVC and Spring Webflux?
 
-   Perbedaan yang paling terasa dan terlihat mata saat menggunakan Spring Webflux selama pengalaman menggunakan framework ini adalah jika kita melihat langsung ke dalam thread.
+   The most noticeable and visible difference when using Spring Webflux, based on experience with this framework, is evident when looking directly at the threads.
 
-   Berikut adalah hasil test antara request yang dihit menggunakan sync dan async proses, dan di hit oleh 10 request yang bersamaan.
+   Here are the test results comparing requests processed using synchronous and asynchronous processes, hit by 10 simultaneous requests.
 
-   Config pengaturan dan code yang digunakan seperti ini : 
+   The configuration settings and code used are as follows:
 
    ![Screen Shot 2019-01-04 at 10.58.35](thread-request.png)
 
 
 
-   dan code yang digunakan seperti ini : 
+   
+and the code used is as follows: 
 
    ![Screen Shot 2019-01-04 at 11.00.52](example-controller.png)
 
-   > pada keadaan default sync proses memiliki thread software sesuai dengan core CPU, test ini menggunakan CPU i3 dengan 4 core, sehingga akan memiliki 4 thread software.
+   > In the default state, the synchronous process has software threads corresponding to the CPU cores. This test uses an i3 CPU with 4 cores, resulting in 4 software threads.
 
    Sync proses :
 
    ![Screen Shot 2019-01-04 at 10.34.27](sync.png)
 
-   Terlihat di gambar, bahwa secara default sync prosess akan menggunakan default thread software dengan nama reactor-http-nio (dengan jumlah 4 thread -1, -2, -3, -4) dan sample time berkisar 3 ke 5,5 dan ke 8,5, sesuai dengan code yang di sleep selama 3 detik
+  As seen in the image, the default synchronous process will use the default software threads named reactor-http-nio (with 4 threads: -1, -2, -3, -4), and the sample times range from 3 to 5.5 to 8.5 seconds, consistent with the code being set to sleep      for 3 seconds.
 
    Async proses : 
 
    ![Screen Shot 2019-01-04 at 10.36.15](async.png)
 
-   Sedangkan untuk async proses, terlihat webflux membuat thread yang terpisah dari thread software dengan nama elastic 3 - 12 ( 10 thread ) sesuai dengan 10 request yang di hit, sehingga 10 request tersebut dapat selesai dengan waktu yang bersamaan, dikisaran 3 detik (sesuai thread sleep)
+   Meanwhile, for the asynchronous process, it can be seen that Webflux creates threads separate from the software threads, named elastic-3 to elastic-12 (10 threads) corresponding to the 10 requests made. This allows the 10 requests to be completed        simultaneously, around 3 seconds (matching the thread sleep duration).
+
+5. Spring Reactor
+   Spring Reactor is a reactive programming library that provides a foundation for building asynchronous, non-blocking applications on the JVM. It is part of the Spring Webflux ecosystem and enables handling of high-throughput, scalable operations with       minimal resource consumption. Reactor leverages Project Reactor, which provides two core reactive types:
+
+   - Mono: Represents a single value or no value (0..1).
+   - Flux: Represents a stream of multiple values (0..N).
+  ** Why Use Spring Reactor?**
+      - Asynchronous and Non-blocking: Handles multiple concurrent operations without blocking threads.
+      - Backpressure Handling: Efficiently manages data flow using the Publisher-Subscriber model.
+      - High Performance: Ideal for I/O-intensive applications like microservices and APIs.
+      - Integration: Works seamlessly with Spring Webflux, R2DBC, and other reactive frameworks.
+   
+   **Key Concepts**
+   Mono and Flux:
+
+   Mono.just("Hello"): Emits a single value.
+   Flux.range(1, 5): Emits a range of integers from 1 to 5.
+   Operators:
+
+   Transform data: .map(), .flatMap()
+   Filter: .filter()
+   Combine: .zip(), .merge()
+   Schedulers:
+
+   Control thread execution with Schedulers.parallel(), Schedulers.elastic(), etc.
 
 4. How to run
    - Install mongodb, java 8, maven
-   - Buat database dimongodb dengan nama : webflux-demo
-   - Jalankan perintah mvn clean install
-   - Run aplikasi menggunakan command line ataupun melalui tombol run yang ada di IDE
+   - Create database on mongo db : webflux-demo
+   - run mvn clean install
+   - Run application
